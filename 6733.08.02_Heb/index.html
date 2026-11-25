@@ -180,7 +180,9 @@ function bindDemographics(survey, commit, warn, submit) {
   }
   for (const name of names) {
     for (const input of document.querySelectorAll('input[name="' + name + '"]')) {
-      input.checked = input.value === String(survey[name] ?? '');
+      const previous = survey[name];
+      const mergeFields = name === 'study_field' && (previous === 'marketing' || previous === 'advertising');
+      input.checked = input.value === (mergeFields ? 'marketing_advertising' : String(previous ?? ''));
       input.addEventListener('change', () => {
         const value = valueFor(name, input.value);
         if (name === 'study_field') {
@@ -244,7 +246,7 @@ const IntegratedApp = (() => {
 </script>
 <script>
 function startLegacyApp() {
-window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_blocks","stimuli_revision":"F2.2","app_version":"four-block-pilot-2.2.0","stock_order_method":"participant_fisher_yates_replay","stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","part2":{"title":"הוראות — חלק 2","overview":{"paragraphs":["בחלק 2 יוצגו לך שוב אותן מניות, באותו סדר שבו הוצגו בחלק 1.","לכל מניה תוצג לך גם תחזית של אדם אחר.","תוכלו לעדכן את התחזית הראשונית שלכם לפי שיקול דעתכם.","המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח."],"button":"הבא"},"first_profile":{"paragraphs":["לפניך פרופיל של חשבון אינסטגרם. לכל מניה בסדרה זו תוצג לך תחזית של האדם שמאחורי החשבון.","מתחת לפרופיל יוצגו גם נתונים על דיוק תחזיות העבר של אותו אדם לגבי מחירי מניות, אם נתונים אלה זמינים.","הנתון שמוצג הוא השגיאה הממוצעת בתחזיות העבר של אותו אדם לגבי מחירי מניות.","ככל שהשגיאה קטנה יותר, כך התחזיות מדויקות יותר.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"later_profile":{"paragraphs":["כעת יוצגו לך 8 מניות נוספות.","בסדרה זו יוצגו לך תחזיות של אדם אחר, בעל חשבון אינסטגרם שונה.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"benchmark_sentence":"לשם השוואה, השגיאה הממוצעת בתחזיות של כלל המשתתפים במשימה היא 7.40 נקודות."},"intro_html":"\n      <h1>הוראות — חלק 1</h1>\n      <p>במחקר זה אנו בוחנים כיצד אנשים משתמשים במידע פיננסי המוצג בדרכים שונות.</p>\n      <p>במהלך המשימה יוצג לך מידע על מניות בגרפים ובמספרים. לאחר מכן נבקש ממך להעריך את מחירי המניות.</p>\n      <p>המשימה שלך היא לחזות את מדד המחיר של מניות הנסחרות בבורסה בלונדון על סמך ערכי המדד שלהן בעבר.</p>\n      <p>ערך של 100 מציין שמחיר המניה שווה למחיר הבסיס שלה. ערך של 110 מציין שמחירה גבוה בכ־10% ממחיר הבסיס, וערך של 90 מציין שמחירה נמוך בכ־10% ממנו.</p>\n      <p class=\"introGap\">בכל מסך יוצג גרף של מדד המחיר של מניה אחת בשש התקופות האחרונות (תקופות 1 עד 6). נבקש ממך לחזות את ערך המדד בתקופה 10, כלומר ארבע תקופות אחרי התקופה האחרונה שמוצגת בגרף.</p>\n      <p class=\"introGap\">התחזיות שלך צריכות להיות בטווח שבין 50 ל־150 נקודות מדד.</p>\n      <p class=\"introGap\">המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח.</p>\n      <p>כדי להתחיל, יש ללחוץ על הכפתור ״הבא״.</p>\n      ","demographics_html":"\n      <h1>שאלות לסיום</h1>\n      <div class=\"postSurveyBlock\">\n        <div class=\"postSurveyQuestion\">\n          <h3>מהו מינך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"מין\">\n            <label><input type=\"radio\" name=\"sex\" value=\"Male\"> זכר</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Female\"> נקבה</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Other\"> אחר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מה גילך? <span class=\"requiredMark\">*</span></h3>\n          <input id=\"age\" class=\"postSurveyInput\" type=\"number\" min=\"18\" max=\"120\" step=\"1\" inputmode=\"numeric\" placeholder=\"גיל\">\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מהי רמת ההשכלה הגבוהה ביותר שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"השכלה\">\n            <label><input type=\"radio\" name=\"edu\" value=\"left before completing lower-secondary\"> לא סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed lower-secondary\"> סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed upper-secondary\"> סיימתי תיכון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"studied in higher education\"> למדתי במוסד להשכלה גבוהה</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed bachelor degree\"> סיימתי תואר ראשון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed master’s degree or above\"> סיימתי תואר שני או תואר מתקדם יותר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_field_label\">מהו תחום הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_field_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_field\" value=\"marketing\"> שיווק</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"advertising\"> פרסום</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"finance\"> מימון</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"human_resources\"> משאבי אנוש</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"information_systems\"> מערכות מידע</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"entrepreneurship\"> יזמות</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"other\"> אחר</label>\n          </div>\n          <div id=\"study_field_other_row\" hidden>\n            <label for=\"study_field_other\">מהו תחום הלימוד? (רשות)</label>\n            <input type=\"text\" id=\"study_field_other\" class=\"postSurveyInput\" maxlength=\"300\" dir=\"auto\">\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_year_label\">מהי שנת הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_year_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_year\" value=\"1\"> 1</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"2\"> 2</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"3\"> 3</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"4\"> 4 ומעלה</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"household_income_relative_label\">מהי הכנסת משק הבית שלך בהשוואה להכנסה הממוצעת של משק בית בישראל? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"household_income_relative_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"1\"> 1 – הרבה מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"2\"> 2 – מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"3\"> 3 – בערך כמו הממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"4\"> 4 – מעל לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"5\"> 5 – הרבה מעל לממוצע</label>\n          </div>\n        </div>\n\n        </div>","closing_checks":"profile_ratings","instructions_revision":"I5.2-4checks","post_presentation_revision":"P3.1","block_count":4,"trials_per_block":8,"score_values":[2.1,2.2],"allocation_count":3072,"source_app_version":"blocked-pilot-1.3.3","source_stimuli_revision":"B1.9","source_stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","owner_assignment_revision":"O1.3"};
+window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_blocks","stimuli_revision":"F2.2","app_version":"four-block-pilot-2.2.0","stock_order_method":"participant_fisher_yates_replay","stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","part2":{"title":"הוראות — חלק 2","overview":{"paragraphs":["בחלק 2 יוצגו לך שוב אותן מניות, באותו סדר שבו הוצגו בחלק 1.","לכל מניה תוצג לך גם תחזית של אדם אחר.","תוכלו לעדכן את התחזית הראשונית שלכם לפי שיקול דעתכם.","המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח."],"button":"הבא"},"first_profile":{"paragraphs":["לפניך פרופיל של חשבון אינסטגרם. לכל מניה בסדרה זו תוצג לך תחזית של האדם שמאחורי החשבון.","מתחת לפרופיל יוצגו גם נתונים על דיוק תחזיות העבר של אותו אדם לגבי מחירי מניות, אם נתונים אלה זמינים.","הנתון שמוצג הוא השגיאה הממוצעת בתחזיות העבר של אותו אדם לגבי מחירי מניות.","ככל שהשגיאה קטנה יותר, כך התחזיות מדויקות יותר.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"later_profile":{"paragraphs":["כעת יוצגו לך 8 מניות נוספות.","בסדרה זו יוצגו לך תחזיות של אדם אחר, בעל חשבון אינסטגרם שונה.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"benchmark_sentence":"לשם השוואה, השגיאה הממוצעת בתחזיות של כלל המשתתפים במשימה היא 7.40 נקודות."},"intro_html":"\n      <h1>הוראות — חלק 1</h1>\n      <p>במחקר זה אנו בוחנים כיצד אנשים משתמשים במידע פיננסי המוצג בדרכים שונות.</p>\n      <p>במהלך המשימה יוצג לך מידע על מניות בגרפים ובמספרים. לאחר מכן נבקש ממך להעריך את מחירי המניות.</p>\n      <p>המשימה שלך היא לחזות את מדד המחיר של מניות הנסחרות בבורסה בלונדון על סמך ערכי המדד שלהן בעבר.</p>\n      <p>ערך של 100 מציין שמחיר המניה שווה למחיר הבסיס שלה. ערך של 110 מציין שמחירה גבוה בכ־10% ממחיר הבסיס, וערך של 90 מציין שמחירה נמוך בכ־10% ממנו.</p>\n      <p class=\"introGap\">בכל מסך יוצג גרף של מדד המחיר של מניה אחת בשש התקופות האחרונות (תקופות 1 עד 6). נבקש ממך לחזות את ערך המדד בתקופה 10, כלומר ארבע תקופות אחרי התקופה האחרונה שמוצגת בגרף.</p>\n      <p class=\"introGap\">התחזיות שלך צריכות להיות בטווח שבין 50 ל־150 נקודות מדד.</p>\n      <p class=\"introGap\">המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח.</p>\n      <p>כדי להתחיל, יש ללחוץ על הכפתור ״הבא״.</p>\n      ","demographics_html":"\n      <h1>שאלות לסיום</h1>\n      <div class=\"postSurveyBlock\">\n        <div class=\"postSurveyQuestion\">\n          <h3>מהו מינך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"מין\">\n            <label><input type=\"radio\" name=\"sex\" value=\"Male\"> זכר</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Female\"> נקבה</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Other\"> אחר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מה גילך? <span class=\"requiredMark\">*</span></h3>\n          <input id=\"age\" class=\"postSurveyInput\" type=\"number\" min=\"18\" max=\"120\" step=\"1\" inputmode=\"numeric\" placeholder=\"גיל\">\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מהי רמת ההשכלה הגבוהה ביותר שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"השכלה\">\n            <label><input type=\"radio\" name=\"edu\" value=\"left before completing lower-secondary\"> לא סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed lower-secondary\"> סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed upper-secondary\"> סיימתי תיכון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"currently studying for a bachelor degree\"> לומד/ת תואר ראשון במכללה/אוניברסיטה</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed bachelor degree\"> סיימתי תואר ראשון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed master’s degree or above\"> סיימתי תואר שני או תואר מתקדם יותר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_field_label\">מהו תחום הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_field_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_field\" value=\"marketing_advertising\"> שיווק ו/או פרסום</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"finance\"> מימון</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"human_resources\"> משאבי אנוש</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"information_systems\"> מערכות מידע</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"entrepreneurship\"> יזמות</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"other\"> אחר</label>\n          </div>\n          <div id=\"study_field_other_row\" hidden>\n            <label for=\"study_field_other\">מהו תחום הלימוד? (רשות)</label>\n            <input type=\"text\" id=\"study_field_other\" class=\"postSurveyInput\" maxlength=\"300\" dir=\"auto\">\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_year_label\">מהי שנת הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_year_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_year\" value=\"1\"> 1</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"2\"> 2</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"3\"> 3</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"4\"> 4 ומעלה</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"household_income_relative_label\">מהי הכנסת משק הבית שלך בהשוואה להכנסה הממוצעת של משק בית בישראל? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"household_income_relative_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"1\"> 1 – הרבה מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"2\"> 2 – מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"3\"> 3 – בערך כמו הממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"4\"> 4 – מעל לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"5\"> 5 – הרבה מעל לממוצע</label>\n          </div>\n        </div>\n\n        </div>","closing_checks":"profile_ratings","instructions_revision":"I5.2-4checks","post_presentation_revision":"P3.1","block_count":4,"trials_per_block":8,"score_values":[2.1,2.2],"allocation_count":3072,"source_app_version":"blocked-pilot-1.3.3","source_stimuli_revision":"B1.9","source_stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","owner_assignment_revision":"O1.3"};
 
 ;
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.AccountAssignment=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
@@ -590,13 +592,13 @@ return {forVersion,assignments:()=>JSON.parse(JSON.stringify(ASSIGNMENTS))};
     lastTransport = status;
     if (!$('transferStatus')) return;
     const messages = {standalone:'המשימה הושלמה. אפשר להוריד את קובצי התשובות של הרצת הבדיקה הזו.',
-      sending:'Transferring your responses to the survey. Please wait…',
-      accepted:'התשובות הועברו לשאלון. כדי לשמור ולהמשיך יש ללחוץ על ״הבא״ בשאלון.',
+      sending:'התשובות מועברות לשאלון…',
+      accepted:'התשובות הועברו לשאלון.',
       unconfirmed:'טרם התקבל אישור מהשאלון. התשובות שמורות במכשיר הזה. אפשר ללחוץ על ״שליחה חוזרת״ או להוריד גיבוי לפני סגירת הדף.'};
     const participantMessages = {
       standalone:'תודה על ההשתתפות! התשובות שלך נשמרו בדפדפן הזה.',
-      sending:'Saving your responses…',
-      accepted:'כדי להמשיך יש ללחוץ על ״הבא״ בשאלון.',
+      sending:'התשובות נשמרות…',
+      accepted:'התשובות נקלטו.',
       unconfirmed:'טרם התקבל אישור שהשאלון קיבל את התשובות. יש לטעון מחדש את הדף כדי לנסות שוב.'
     };
     $('transferStatus').textContent = (config.test ? messages : participantMessages)[status] || status;
@@ -725,6 +727,21 @@ return {forVersion,assignments:()=>JSON.parse(JSON.stringify(ASSIGNMENTS))};
   }
   function render() {
     if(blocked) return;
+    if (state.stage === 'done' && bridge.embedded && !config.test) {
+      const content = $('content');
+      content.querySelectorAll('button,input,select,textarea').forEach(el => { el.disabled = true; });
+      const warning = $('warning');
+      if (warning) {
+        warning.id = 'transferStatus';
+        warning.className = 'small';
+        warning.hidden = false;
+        warning.setAttribute('role', 'status');
+      } else if (!$('transferStatus')) {
+        content.innerHTML = '<p id="transferStatus" role="status"></p>';
+      }
+      bridge.send(buildPayload()).catch(error => showTransport(error.message));
+      return;
+    }
     chart=null; viewCache=clone(state.chart_views);seenCache=clone(state.seen);progress();
     const copy=SETTINGS.part2;
     if(['practice','initial','revision'].includes(state.stage)) trialScreen();
@@ -752,7 +769,7 @@ return {forVersion,assignments:()=>JSON.parse(JSON.stringify(ASSIGNMENTS))};
       for(const name of order)saveRadio('rating_'+name,(s,v)=>{s.survey.profile_ratings=s.survey.profile_ratings||[];s.survey.profile_ratings[s.rating_index]={...s.survey.profile_ratings[s.rating_index],trial_order:r.part2_trial_order,initial_trial_order:Number(r.trial_order),block_number:r.block_number,stock_id:r.stock_id,adviser_profile_id:r.adviser_profile_id,condition:condition(r),post_image_sha256:r.post_image_sha256,question_order:order.join('_then_'),[name]:Number(v)};});
       $('next').onclick=()=>{if(!order.every(n=>selected('rating_'+n))){warn('כדי להמשיך יש לענות על שתי השאלות.');return;}move(s=>{s.survey.profile_ratings[s.rating_index].submitted_at=timeNow();if(s.rating_index<3)s.rating_index++;else s.stage='comprehension';});};
     }else if(state.stage==='comprehension'){
-      $('content').innerHTML='<h1>שאלות לסיום</h1>'+accuracyRatingQuestions(state.survey.accuracy_ratings_by_mean_error)+'<fieldset><legend>מה הייתה משמעות הכיתוב ״המידע עדיין אינו זמין״ שהופיע מתחת לתחזית?</legend>'+radio('unavailableMeaning',[['not_provided','לא נמסר מידע על השגיאה הממוצעת בתחזיות של בעל החשבון'],['zero','השגיאה בתחזיות הקודמות הייתה אפס'],['no_history','האדם הזה מעולם לא נתן תחזיות בעבר'],['unsure','אין לי תשובה ודאית']],state.survey.unavailable_meaning)+'</fieldset><p class="small">השאלות האלה עוזרות לנו להבין כיצד המשתתפים פירשו את ההוראות.</p>'+button();
+      $('content').innerHTML='<h1>שאלות לסיום</h1>'+accuracyRatingQuestions(state.survey.accuracy_ratings_by_mean_error)+'<fieldset><legend>מה היתה משמעות הכיתוב ״המידע עדיין אינו זמין״ שהופיע מתחת לתחזית?</legend>'+radio('unavailableMeaning',[['not_provided','לא נמסר מידע על השגיאה הממוצעת בתחזיות של בעל החשבון'],['zero','השגיאה בתחזיות הקודמות הייתה אפס'],['no_history','האדם הזה מעולם לא נתן תחזיות בעבר'],['unsure','אין לי תשובה ודאית']],state.survey.unavailable_meaning)+'</fieldset><p class="small">השאלות האלה עוזרות לנו להבין כיצד המשתתפים פירשו את ההוראות.</p>'+button();
       for (const error of meanErrorsToRate) {
         saveRadio('accuracy_by_error_' + error, (s, value) => {
           if (!s.survey.accuracy_ratings_by_mean_error) s.survey.accuracy_ratings_by_mean_error = {};
@@ -835,7 +852,7 @@ return {forVersion,assignments:()=>JSON.parse(JSON.stringify(ASSIGNMENTS))};
 }
 </script>
 <script>
-window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_blocks","stimuli_revision":"F2.3","app_version":"four-block-pilot-2.3.0","stock_order_method":"participant_fisher_yates_replay","stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","part2":{"title":"הוראות — חלק 2","overview":{"paragraphs":["בחלק 2 יוצגו לך שוב אותן מניות, באותו סדר שבו הוצגו בחלק 1.","לכל מניה תוצג לך גם תחזית של אדם אחר.","תוכלו לעדכן את התחזית הראשונית שלכם לפי שיקול דעתכם.","המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח."],"button":"הבא"},"first_profile":{"paragraphs":["לפניך פרופיל של חשבון אינסטגרם. לכל מניה בסדרה זו תוצג לך תחזית של האדם שמאחורי החשבון.","מתחת לפרופיל יוצגו גם נתונים על דיוק תחזיות העבר של אותו אדם לגבי מחירי מניות, אם נתונים אלה זמינים.","הנתון שמוצג הוא השגיאה הממוצעת בתחזיות העבר של אותו אדם לגבי מחירי מניות.","ככל שהשגיאה קטנה יותר, כך התחזיות מדויקות יותר.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"later_profile":{"paragraphs":["כעת יוצגו לך 8 מניות נוספות.","בסדרה זו יוצגו לך תחזיות של אדם אחר, בעל חשבון אינסטגרם שונה.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"benchmark_sentence":"לשם השוואה, השגיאה הממוצעת בתחזיות של כלל המשתתפים במשימה היא 7.40 נקודות."},"intro_html":"\n      <h1>הוראות — חלק 1</h1>\n      <p>במחקר זה אנו בוחנים כיצד אנשים משתמשים במידע פיננסי המוצג בדרכים שונות.</p>\n      <p>במהלך המשימה יוצג לך מידע על מניות בגרפים ובמספרים. לאחר מכן נבקש ממך להעריך את מחירי המניות.</p>\n      <p>המשימה שלך היא לחזות את מדד המחיר של מניות הנסחרות בבורסה בלונדון על סמך ערכי המדד שלהן בעבר.</p>\n      <p>ערך של 100 מציין שמחיר המניה שווה למחיר הבסיס שלה. ערך של 110 מציין שמחירה גבוה בכ־10% ממחיר הבסיס, וערך של 90 מציין שמחירה נמוך בכ־10% ממנו.</p>\n      <p class=\"introGap\">בכל מסך יוצג גרף של מדד המחיר של מניה אחת בשש התקופות האחרונות (תקופות 1 עד 6). נבקש ממך לחזות את ערך המדד בתקופה 10, כלומר ארבע תקופות אחרי התקופה האחרונה שמוצגת בגרף.</p>\n      <p class=\"introGap\">התחזיות שלך צריכות להיות בטווח שבין 50 ל־150 נקודות מדד.</p>\n      <p class=\"introGap\">המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח.</p>\n      <p>כדי להתחיל, יש ללחוץ על הכפתור ״הבא״.</p>\n      ","demographics_html":"\n      <h1>שאלות לסיום</h1>\n      <div class=\"postSurveyBlock\">\n        <div class=\"postSurveyQuestion\">\n          <h3>מהו מינך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"מין\">\n            <label><input type=\"radio\" name=\"sex\" value=\"Male\"> זכר</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Female\"> נקבה</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Other\"> אחר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מה גילך? <span class=\"requiredMark\">*</span></h3>\n          <input id=\"age\" class=\"postSurveyInput\" type=\"number\" min=\"18\" max=\"120\" step=\"1\" inputmode=\"numeric\" placeholder=\"גיל\">\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מהי רמת ההשכלה הגבוהה ביותר שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"השכלה\">\n            <label><input type=\"radio\" name=\"edu\" value=\"left before completing lower-secondary\"> לא סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed lower-secondary\"> סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed upper-secondary\"> סיימתי תיכון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"studied in higher education\"> למדתי במוסד להשכלה גבוהה</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed bachelor degree\"> סיימתי תואר ראשון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed master’s degree or above\"> סיימתי תואר שני או תואר מתקדם יותר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_field_label\">מהו תחום הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_field_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_field\" value=\"marketing\"> שיווק</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"advertising\"> פרסום</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"finance\"> מימון</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"human_resources\"> משאבי אנוש</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"information_systems\"> מערכות מידע</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"entrepreneurship\"> יזמות</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"other\"> אחר</label>\n          </div>\n          <div id=\"study_field_other_row\" hidden>\n            <label for=\"study_field_other\">מהו תחום הלימוד? (רשות)</label>\n            <input type=\"text\" id=\"study_field_other\" class=\"postSurveyInput\" maxlength=\"300\" dir=\"auto\">\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_year_label\">מהי שנת הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_year_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_year\" value=\"1\"> 1</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"2\"> 2</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"3\"> 3</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"4\"> 4 ומעלה</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"household_income_relative_label\">מהי הכנסת משק הבית שלך בהשוואה להכנסה הממוצעת של משק בית בישראל? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"household_income_relative_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"1\"> 1 – הרבה מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"2\"> 2 – מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"3\"> 3 – בערך כמו הממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"4\"> 4 – מעל לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"5\"> 5 – הרבה מעל לממוצע</label>\n          </div>\n        </div>\n\n        </div>","closing_checks":"profile_ratings","instructions_revision":"I5.2-4checks","post_presentation_revision":"P3.1","block_count":4,"trials_per_block":8,"score_values":[2.1,2.2],"allocation_count":16,"source_app_version":"blocked-pilot-1.3.3","source_stimuli_revision":"B1.9","source_stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","owner_assignment_revision":"O2.0"};
+window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_blocks","stimuli_revision":"F2.3","app_version":"four-block-pilot-2.4.0","stock_order_method":"participant_fisher_yates_replay","stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","part2":{"title":"הוראות — חלק 2","overview":{"paragraphs":["בחלק 2 יוצגו לך שוב אותן מניות, באותו סדר שבו הוצגו בחלק 1.","לכל מניה תוצג לך גם תחזית של אדם אחר.","תוכלו לעדכן את התחזית הראשונית שלכם לפי שיקול דעתכם.","המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח."],"button":"הבא"},"first_profile":{"paragraphs":["לפניך פרופיל של חשבון אינסטגרם. לכל מניה בסדרה זו תוצג לך תחזית של האדם שמאחורי החשבון.","מתחת לפרופיל יוצגו גם נתונים על דיוק תחזיות העבר של אותו אדם לגבי מחירי מניות, אם נתונים אלה זמינים.","הנתון שמוצג הוא השגיאה הממוצעת בתחזיות העבר של אותו אדם לגבי מחירי מניות.","ככל שהשגיאה קטנה יותר, כך התחזיות מדויקות יותר.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"later_profile":{"paragraphs":["כעת יוצגו לך 8 מניות נוספות.","בסדרה זו יוצגו לך תחזיות של אדם אחר, בעל חשבון אינסטגרם שונה.","לאחר עיון בפרופיל האינסטגרם, ענו על כמה שאלות הבנה."],"button":"הבא"},"benchmark_sentence":"לשם השוואה, השגיאה הממוצעת בתחזיות של כלל המשתתפים במשימה היא 7.40 נקודות."},"intro_html":"\n      <h1>הוראות — חלק 1</h1>\n      <p>במחקר זה אנו בוחנים כיצד אנשים משתמשים במידע פיננסי המוצג בדרכים שונות.</p>\n      <p>במהלך המשימה יוצג לך מידע על מניות בגרפים ובמספרים. לאחר מכן נבקש ממך להעריך את מחירי המניות.</p>\n      <p>המשימה שלך היא לחזות את מדד המחיר של מניות הנסחרות בבורסה בלונדון על סמך ערכי המדד שלהן בעבר.</p>\n      <p>ערך של 100 מציין שמחיר המניה שווה למחיר הבסיס שלה. ערך של 110 מציין שמחירה גבוה בכ־10% ממחיר הבסיס, וערך של 90 מציין שמחירה נמוך בכ־10% ממנו.</p>\n      <p class=\"introGap\">בכל מסך יוצג גרף של מדד המחיר של מניה אחת בשש התקופות האחרונות (תקופות 1 עד 6). נבקש ממך לחזות את ערך המדד בתקופה 10, כלומר ארבע תקופות אחרי התקופה האחרונה שמוצגת בגרף.</p>\n      <p class=\"introGap\">התחזיות שלך צריכות להיות בטווח שבין 50 ל־150 נקודות מדד.</p>\n      <p class=\"introGap\">המשתתפים שייתנו את התחזיות המדויקות ביותר יקבלו פרס של 100 ש\"ח.</p>\n      <p>כדי להתחיל, יש ללחוץ על הכפתור ״הבא״.</p>\n      ","demographics_html":"\n      <h1>שאלות לסיום</h1>\n      <div class=\"postSurveyBlock\">\n        <div class=\"postSurveyQuestion\">\n          <h3>מהו מינך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"מין\">\n            <label><input type=\"radio\" name=\"sex\" value=\"Male\"> זכר</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Female\"> נקבה</label>\n            <label><input type=\"radio\" name=\"sex\" value=\"Other\"> אחר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מה גילך? <span class=\"requiredMark\">*</span></h3>\n          <input id=\"age\" class=\"postSurveyInput\" type=\"number\" min=\"18\" max=\"120\" step=\"1\" inputmode=\"numeric\" placeholder=\"גיל\">\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3>מהי רמת ההשכלה הגבוהה ביותר שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-label=\"השכלה\">\n            <label><input type=\"radio\" name=\"edu\" value=\"left before completing lower-secondary\"> לא סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed lower-secondary\"> סיימתי חטיבת ביניים</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed upper-secondary\"> סיימתי תיכון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"currently studying for a bachelor degree\"> לומד/ת תואר ראשון במכללה/אוניברסיטה</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed bachelor degree\"> סיימתי תואר ראשון</label>\n            <label><input type=\"radio\" name=\"edu\" value=\"completed master’s degree or above\"> סיימתי תואר שני או תואר מתקדם יותר</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_field_label\">מהו תחום הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_field_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_field\" value=\"marketing_advertising\"> שיווק ו/או פרסום</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"finance\"> מימון</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"human_resources\"> משאבי אנוש</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"information_systems\"> מערכות מידע</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"entrepreneurship\"> יזמות</label>\n            <label><input type=\"radio\" name=\"study_field\" value=\"other\"> אחר</label>\n          </div>\n          <div id=\"study_field_other_row\" hidden>\n            <label for=\"study_field_other\">מהו תחום הלימוד? (רשות)</label>\n            <input type=\"text\" id=\"study_field_other\" class=\"postSurveyInput\" maxlength=\"300\" dir=\"auto\">\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"study_year_label\">מהי שנת הלימוד שלך? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"study_year_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"study_year\" value=\"1\"> 1</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"2\"> 2</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"3\"> 3</label>\n            <label><input type=\"radio\" name=\"study_year\" value=\"4\"> 4 ומעלה</label>\n          </div>\n        </div>\n\n        <div class=\"postSurveyQuestion\">\n          <h3 id=\"household_income_relative_label\">מהי הכנסת משק הבית שלך בהשוואה להכנסה הממוצעת של משק בית בישראל? <span class=\"requiredMark\">*</span></h3>\n          <div class=\"postSurveyOptions\" role=\"radiogroup\" aria-labelledby=\"household_income_relative_label\" aria-required=\"true\">\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"1\"> 1 – הרבה מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"2\"> 2 – מתחת לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"3\"> 3 – בערך כמו הממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"4\"> 4 – מעל לממוצע</label>\n            <label><input type=\"radio\" name=\"household_income_relative\" value=\"5\"> 5 – הרבה מעל לממוצע</label>\n          </div>\n        </div>\n\n        </div>","closing_checks":"profile_ratings","instructions_revision":"I5.2-4checks","post_presentation_revision":"P3.1","block_count":4,"trials_per_block":8,"score_values":[2.1,2.2],"allocation_count":32,"source_app_version":"blocked-pilot-1.3.3","source_stimuli_revision":"B1.9","source_stimulus_manifest_sha256":"461ee7cb69201d57640549fcd839fd11b4e78f2e118f1edf9f5ba60ba11e9e84","owner_assignment_revision":"O2.0"};
 
 </script>
 <script>
@@ -895,21 +912,41 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
   else root.PilotCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (Accounts) {
   'use strict';
-  const STUDY = '6733.08.02', REVISION = 'F2.3', APP = 'four-block-pilot-2.3.0';
+  const STUDY = '6733.08.02', REVISION = 'F2.3', APP = 'four-block-pilot-2.4.0';
+  const PREVIOUS_APP = 'four-block-pilot-2.3.0';
   const DESIGN = '6733.08.02_four_blocks';
   const BLOCKS = ['LU', 'LA', 'HU', 'HA'];
-  const ORDERS = ['LU-LA-HA-HU','LA-HU-LU-HA','HU-HA-LA-LU','HA-LU-HU-LA'];
-  const SCHEDULES = ORDERS.flatMap((blockOrder, orderIndex) =>
+  // Adjacent slots alternate diagnosticity first. The next two bits control the
+  // popularity order in the first and second halves, independently.
+  const ORDERS = [
+    'LU-HU-LA-HA', 'LA-HA-LU-HU', 'HU-LU-LA-HA', 'HA-LA-LU-HU',
+    'LU-HU-HA-LA', 'LA-HA-HU-LU', 'HU-LU-HA-LA', 'HA-LA-HU-LU'
+  ];
+  const SCHEDULES = Array.from({length: 32}, (_, slot) => {
+    const orderIndex = slot % ORDERS.length;
+    const rotation = (Math.floor(slot / 8) + Math.floor(orderIndex / 2)) % 4 + 1;
+    return {scheduleId: 'S' + String(slot + 1).padStart(2, '0'), rotation: 'R' + rotation, blockOrder: ORDERS[orderIndex]};
+  });
+  const previousOrders = ['LU-LA-HA-HU','LA-HU-LU-HA','HU-HA-LA-LU','HA-LU-HU-LA'];
+  const previousSchedules = previousOrders.flatMap((blockOrder, orderIndex) =>
     [0,1,2,3].map(rotationIndex => ({
       scheduleId: 'S' + String(4 * orderIndex + rotationIndex + 1).padStart(2, '0'),
       rotation: 'R' + (rotationIndex + 1), blockOrder
     })));
   function scheduleAtIndex(index) {
+    const batch = Math.floor((index - 1) / SCHEDULES.length);
+    let offset = 2166136261;
+    for (const c of '6733.08.02-diagnosticity-halves:' + batch) offset = Math.imul(offset ^ c.charCodeAt(0), 16777619);
+    // A bitwise permutation changes the starting side of each within-batch pair.
+    const slot = ((index - 1) % SCHEDULES.length) ^ (offset & 31);
+    return SCHEDULES[slot];
+  }
+  function previousScheduleAtIndex(index) {
     const batch = Math.floor((index - 1) / 16);
     // Reproducible Fisher-Yates permutation per enrollment batch, identical on every client.
     let seed = 2166136261;
     for (const c of '6733.08.02-schedules-v1:' + batch) seed = Math.imul(seed ^ c.charCodeAt(0), 16777619);
-    const shuffled = SCHEDULES.slice();
+    const shuffled = previousSchedules.slice();
     for (let n = shuffled.length; n > 1; n--) {
       seed = (seed + 0x6D2B79F5) >>> 0;
       let z = Math.imul(seed ^ (seed >>> 15), seed | 1);
@@ -922,7 +959,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
   const STAGES = ['intro', 'practice', 'initial', 'part2_profile', 'part2_accuracy', 'block_intro', 'revision', 'purpose', 'profile_ratings', 'comprehension', 'comments', 'demographics', 'done'];
   const CHUNK_SIZE = 1500, MAX_CHUNKS = 120;
   function assert(ok, message) { if (!ok) throw new Error(message); }
-  function config(search) {
+  function config(search, resumePrevious = false) {
     const q = new URLSearchParams(search);
     const test = q.get('test') === '1';
     const pid = q.get('pid') || '';
@@ -934,17 +971,19 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
     assert(!['version','block_order','score_mapping'].some(name => q.has(name)), 'הקישור מפנה לגרסה קודמת של המחקר. יש לפתוח את המשימה באמצעות הקישור העדכני לשאלון.');
     const supplied = q.get('schedule_id');
     assert(supplied !== null || index !== null, 'חסר מזהה סדר הצגה או מספר הקצאה.');
-    const schedule = supplied !== null ? SCHEDULES.find(s => s.scheduleId === supplied) : scheduleAtIndex(index);
-    assert(schedule, 'מזהה סדר ההצגה חייב להיות בטווח S01 עד S16.');
+    const schedules = resumePrevious ? previousSchedules : SCHEDULES;
+    const schedule = supplied !== null ? schedules.find(s => s.scheduleId === supplied) :
+      (resumePrevious ? previousScheduleAtIndex(index) : scheduleAtIndex(index));
+    assert(schedule, 'מזהה סדר ההצגה אינו תקין לגרסה זו של המחקר.');
     const assignmentMethod = supplied !== null ? 'provided_schedule_id' : 'indexed_permuted_batch';
     let parentOrigin = q.get('parent_origin') || '';
     if (parentOrigin) {
       const u = new URL(parentOrigin);
       assert(['https:', 'http:'].includes(u.protocol) && u.origin === parentOrigin, 'כתובת השאלון שממנו נפתחה המשימה אינה תקינה.');
     }
-    return {...schedule, pid, responseId, index, version: 'V001', assignmentMethod, test, parentOrigin};
+    return {...schedule, appVersion: resumePrevious ? PREVIOUS_APP : APP, pid, responseId, index, version: 'V001', assignmentMethod, test, parentOrigin};
   }
-  function stateKey(c) { return DESIGN + ':he:' + APP + ':' + encodeURIComponent(c.responseId) + ':' + encodeURIComponent(c.pid); }
+  function stateKey(c) { return DESIGN + ':he:' + c.appVersion + ':' + encodeURIComponent(c.responseId) + ':' + encodeURIComponent(c.pid); }
   function stageKey(s) { return s.stage + ':' + (s.stage === 'practice' ? s.practice_index : ['initial', 'revision', 'block_intro'].includes(s.stage) ? s.trial_index : 0); }
   const STOCK_ORDER_METHOD = 'participant_fisher_yates_replay';
   function drawProfileValues() {
@@ -967,7 +1006,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
   }
   function scoreMapping(values) { return values.LA.error === 2.1 ? 'L21_H22' : 'L22_H21'; }
   function createState(c, uuid, now, stockOrder, draws = drawProfileValues()) {
-    return {schema_version: 1, study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: APP, post_presentation_revision: "P3.1",
+    return {schema_version: 1, study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: c.appVersion, post_presentation_revision: "P3.1",
       participant_id: c.pid, response_id: c.responseId, assignment_index: c.index, version_id: c.version, block_order: c.blockOrder, score_mapping: scoreMapping(blockValues(c.blockOrder,draws)), allocation_id: c.scheduleId, block_starts: [],
       schedule_id: c.scheduleId, owner_rotation: c.rotation, schedule_assignment_method: c.assignmentMethod, profile_draws: {...draws},
       stock_order: stockOrder.slice(), stock_order_method: STOCK_ORDER_METHOD,
@@ -978,7 +1017,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
       active_ms: {}, reload_count: 0, events: [], completed_payload: null, transport: {acknowledged: false}};
   }
   function validateState(s, c, schedule) {
-    assert(s && s.schema_version === 1 && s.study_id === STUDY && s.stimuli_revision === REVISION && s.app_version === APP, 'ההתקדמות שנשמרה משויכת לגרסה אחרת של המשימה או של חומרי המחקר.');
+    assert(s && s.schema_version === 1 && s.study_id === STUDY && s.stimuli_revision === REVISION && s.app_version === c.appVersion, 'ההתקדמות שנשמרה משויכת לגרסה אחרת של המשימה או של חומרי המחקר.');
     assert(s.participant_id === c.pid && s.response_id === c.responseId && s.version_id === c.version && s.assignment_index === c.index && s.test_mode === c.test && s.block_order === c.blockOrder && s.schedule_id === c.scheduleId && s.allocation_id === c.scheduleId && s.owner_rotation === c.rotation && s.schedule_assignment_method === c.assignmentMethod && s.score_mapping === scoreMapping(blockValues(c.blockOrder,s.profile_draws)), 'פרטי ההקצאה שבקישור שונים מאלה שנשמרו לתשובה זו. ההקצאה המקורית נשמרה.');
     assert(STAGES.includes(s.stage) && Number.isInteger(s.revision) && s.revision >= 0, 'נתוני ההתקדמות שנשמרו אינם תקינים.');
     assert(Array.isArray(s.initial) && Array.isArray(s.final) && s.initial.length <= 32 && s.final.length <= s.initial.length, 'נתוני התחזיות שנשמרו אינם תקינים.');
@@ -1059,7 +1098,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
       const a = s.initial.find(t=>t.stock_id===r.stock_id), b = s.final.find(t=>t.stock_id===r.stock_id), advice = Number(r.forecast_display);
       const initial = a ? a.value : null, final = b ? b.value : null;
       const available = r.information_available === '1';
-      return {study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: APP, post_presentation_revision: "P3.1", export_id: s.export_id,
+      return {study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: s.app_version, post_presentation_revision: "P3.1", export_id: s.export_id,
         participant_id: s.participant_id, response_id: s.response_id, test_mode: s.test_mode ? 1 : 0,
         version_id: s.version_id, assignment_index: s.assignment_index, allocation_id: s.allocation_id, block_order: s.block_order, score_mapping: s.score_mapping,
         schedule_id: s.schedule_id, owner_rotation: s.owner_rotation, schedule_assignment_method: s.schedule_assignment_method, ...s.profile_draws,
@@ -1084,12 +1123,14 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
     });
   }
   function payload(s, schedule, stimulusHash) {
-    return {schema_version: 1, study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: APP, post_presentation_revision: "P3.1",
+    const firstHalf = new Set(schedule.slice(0, 16).map(row => row.information_available));
+    const diagnosticity = firstHalf.size === 1 ? (firstHalf.has('1') ? 'present' : 'absent') : 'mixed';
+    return {schema_version: 1, study_id: STUDY, study_variant: '6733.08.02_Heb', language: 'he', stimuli_revision: REVISION, app_version: s.app_version, post_presentation_revision: "P3.1",
       stimulus_manifest_sha256: stimulusHash, source_assignment_revision:'V5.1', export_id: s.export_id, participant_id: s.participant_id,
       response_id: s.response_id, assignment_index: s.assignment_index, version_id: s.version_id,
       schedule_id: s.schedule_id, owner_rotation: s.owner_rotation, schedule_assignment_method: s.schedule_assignment_method, profile_draws: {...s.profile_draws},
       stock_order_method: s.stock_order_method, stock_order: s.stock_order.slice(),
-      design_label: DESIGN, owner_assignment_revision:'O2.0', instructions_revision:'I5.2-4checks', block_order: s.block_order, score_mapping: s.score_mapping, block_count: 4, trials_per_block: 8, allocation_id: s.allocation_id, block_starts: s.block_starts,
+      first_half_diagnosticity: diagnosticity, design_label: DESIGN, owner_assignment_revision:'O2.0', instructions_revision:'I5.2-4checks', block_order: s.block_order, score_mapping: s.score_mapping, block_count: 4, trials_per_block: 8, allocation_id: s.allocation_id, block_starts: s.block_starts,
       preview_navigation_used:!!s.preview_navigation_used, test_mode: s.test_mode, status: s.stage === 'done' ? 'complete' : 'in_progress', stage: s.stage,
       created_at: s.created_at, completed_at: s.completed_at, initial_count: s.initial.length, final_count: s.final.length,
       reload_count: s.reload_count, practice: s.practice, part2_check: s.part2_check, survey: s.survey,
@@ -1107,7 +1148,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
     for (let i = 0; i < MAX_CHUNKS; i++) out['SMI0802_json_' + String(i + 1).padStart(3, '0')] = chunks[i] || '';
     return out;
   }
-  return {STUDY, REVISION, APP, DESIGN, BLOCKS, ORDERS, SCHEDULES, drawProfileValues, shuffleStockIds, participantSchedule, STAGES, CHUNK_SIZE, MAX_CHUNKS, config, stateKey, stageKey, createState, validateState, validForecast, woa, csv, trialRows, payload, chunkFields, assert};
+  return {STUDY, REVISION, APP, PREVIOUS_APP, DESIGN, BLOCKS, ORDERS, SCHEDULES, drawProfileValues, shuffleStockIds, participantSchedule, STAGES, CHUNK_SIZE, MAX_CHUNKS, config, stateKey, stageKey, createState, validateState, validForecast, woa, csv, trialRows, payload, chunkFields, assert};
 });
 
 </script>
@@ -1530,6 +1571,7 @@ window.PILOT_CONFIG = {"study_id":"6733.08.02","design_label":"6733.08.02_four_b
         if (!config.parentOrigin) throw new Error('כתובת המקור של השאלון לא התקבלה. התשובות עדיין שמורות במכשיר.');
         const json = JSON.stringify(payload), hash = await digest(json);
         const fields = {...PilotCore.chunkFields(json), SMI0802_study: payload.study_id, SMI0802_revision: payload.stimuli_revision,
+          SMI0802_first_half_diagnosticity: payload.first_half_diagnosticity,
           SMI0802_schedule_id: payload.schedule_id, SMI0802_owner_rotation: payload.owner_rotation,
           SMI0802_schedule_assignment_method: payload.schedule_assignment_method,
           SMI0802_first_low_followers: String(payload.profile_draws.first_low_followers),
@@ -1694,13 +1736,13 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
     lastTransport = status;
     if (!$('transferStatus')) return;
     const messages = {standalone:'המשימה הושלמה. אפשר להוריד את קובצי התשובות של הרצת הבדיקה הזו.',
-      sending:'Transferring your responses to the survey. Please wait…',
-      accepted:'התשובות הועברו לשאלון. כדי לשמור ולהמשיך יש ללחוץ על ״הבא״ בשאלון.',
+      sending:'התשובות מועברות לשאלון…',
+      accepted:'התשובות הועברו לשאלון.',
       unconfirmed:'טרם התקבל אישור מהשאלון. התשובות שמורות במכשיר הזה. אפשר ללחוץ על ״שליחה חוזרת״ או להוריד גיבוי לפני סגירת הדף.'};
     const participantMessages = {
       standalone:'תודה על ההשתתפות! התשובות שלך נשמרו בדפדפן הזה.',
-      sending:'Saving your responses…',
-      accepted:'כדי להמשיך יש ללחוץ על ״הבא״ בשאלון.',
+      sending:'התשובות נשמרות…',
+      accepted:'התשובות נקלטו.',
       unconfirmed:'טרם התקבל אישור שהשאלון קיבל את התשובות. יש לטעון מחדש את הדף כדי לנסות שוב.'
     };
     $('transferStatus').textContent = (config.test ? messages : participantMessages)[status] || status;
@@ -1824,6 +1866,21 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
   }
   function render() {
     if(blocked) return;
+    if (state.stage === 'done' && bridge.embedded && !config.test) {
+      const content = $('content');
+      content.querySelectorAll('button,input,select,textarea').forEach(el => { el.disabled = true; });
+      const warning = $('warning');
+      if (warning) {
+        warning.id = 'transferStatus';
+        warning.className = 'small';
+        warning.hidden = false;
+        warning.setAttribute('role', 'status');
+      } else if (!$('transferStatus')) {
+        content.innerHTML = '<p id="transferStatus" role="status"></p>';
+      }
+      bridge.send(buildPayload()).catch(error => showTransport(error.message));
+      return;
+    }
     chart=null; viewCache=clone(state.chart_views);seenCache=clone(state.seen);progress();
     const copy=SETTINGS.part2;
     if(['practice','initial','revision'].includes(state.stage)) trialScreen();
@@ -1851,7 +1908,7 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
       for(const name of order)saveRadio('rating_'+name,(s,v)=>{s.survey.profile_ratings=s.survey.profile_ratings||[];s.survey.profile_ratings[s.rating_index]={...s.survey.profile_ratings[s.rating_index],trial_order:r.part2_trial_order,initial_trial_order:Number(r.trial_order),block_number:r.block_number,stock_id:r.stock_id,adviser_profile_id:r.adviser_profile_id,condition:condition(r),post_image_sha256:r.post_image_sha256,question_order:order.join('_then_'),[name]:Number(v)};});
       $('next').onclick=()=>{if(!order.every(n=>selected('rating_'+n))){warn('כדי להמשיך יש לענות על שתי השאלות.');return;}move(s=>{s.survey.profile_ratings[s.rating_index].submitted_at=timeNow();if(s.rating_index<3)s.rating_index++;else s.stage='comprehension';});};
     }else if(state.stage==='comprehension'){
-      $('content').innerHTML='<h1>שאלות לסיום</h1>'+accuracyRatingQuestions(state.survey.accuracy_ratings_by_mean_error)+'<fieldset><legend>מה הייתה משמעות הכיתוב ״המידע עדיין אינו זמין״ שהופיע מתחת לתחזית?</legend>'+radio('unavailableMeaning',[['not_provided','לא נמסר מידע על השגיאה הממוצעת בתחזיות של בעל החשבון'],['zero','השגיאה בתחזיות הקודמות הייתה אפס'],['no_history','האדם הזה מעולם לא נתן תחזיות בעבר'],['unsure','אין לי תשובה ודאית']],state.survey.unavailable_meaning)+'</fieldset><p class="small">השאלות האלה עוזרות לנו להבין כיצד המשתתפים פירשו את ההוראות.</p>'+button();
+      $('content').innerHTML='<h1>שאלות לסיום</h1>'+accuracyRatingQuestions(state.survey.accuracy_ratings_by_mean_error)+'<fieldset><legend>מה היתה משמעות הכיתוב ״המידע עדיין אינו זמין״ שהופיע מתחת לתחזית?</legend>'+radio('unavailableMeaning',[['not_provided','לא נמסר מידע על השגיאה הממוצעת בתחזיות של בעל החשבון'],['zero','השגיאה בתחזיות הקודמות הייתה אפס'],['no_history','האדם הזה מעולם לא נתן תחזיות בעבר'],['unsure','אין לי תשובה ודאית']],state.survey.unavailable_meaning)+'</fieldset><p class="small">השאלות האלה עוזרות לנו להבין כיצד המשתתפים פירשו את ההוראות.</p>'+button();
       for (const error of meanErrorsToRate) {
         saveRadio('accuracy_by_error_' + error, (s, value) => {
           if (!s.survey.accuracy_ratings_by_mean_error) s.survey.accuracy_ratings_by_mean_error = {};
@@ -1904,7 +1961,7 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
   function testLauncher(legacyLink = false) {
     const options = C.SCHEDULES.map(s => '<option value="'+s.scheduleId+'">'+s.scheduleId+' · '+s.blockOrder+' · '+s.rotation+'</option>').join('');
     const notice = legacyLink ? '<p>הקישור מפנה לגרסה קודמת של הפרופילים. כדי לפתוח בדיקה חדשה יש לבחור סדר הצגה למטה.</p>' : '';
-    $('content').innerHTML='<h1>תצוגה מקדימה לחוקרים — ארבע סדרות</h1><p>6733.08.02_Heb · גרסה 2.3.0 · 32 מניות, ארבע סדרות של שמונה</p>'+notice+
+    $('content').innerHTML='<h1>תצוגה מקדימה לחוקרים — ארבע סדרות</h1><p>6733.08.02_Heb · גרסה 2.4.0 · 32 מניות, ארבע סדרות של שמונה</p>'+notice+
       '<p>בכל הרצה מוגרלים מספרי העוקבים, שגיאות החיזוי וסדר המניות. בחלק 2 מוצגות אותן מניות באותו סדר.</p>'+
       '<label for="testSchedule">סדר הצגה · סדר הסדרות · סבב הקצאת החשבונות</label><select id="testSchedule">'+options+'</select>'+
       '<p>פופולריות נמוכה: LU ללא נתונים על דיוק תחזיות העבר, LA עם נתונים. פופולריות גבוהה: HU ללא נתונים, HA עם נתונים.</p>'+
@@ -1946,16 +2003,21 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
     const responseId = query.get('response_id') || (test ? pid : '');
     if (pid && responseId) {
       const suffix = ':' + encodeURIComponent(responseId) + ':' + encodeURIComponent(pid);
+      const currentKey = C.DESIGN + ':he:' + C.APP + suffix;
+      const previousKey = C.DESIGN + ':he:' + C.PREVIOUS_APP + suffix;
+      if (!localStorage.getItem(currentKey) && localStorage.getItem(previousKey)) {
+        config = C.config(query.toString(), true);
+      }
       const oldKey = C.DESIGN + ':he:four-block-pilot-2.2.0' + suffix;
       const oldParams = ['version','block_order','score_mapping'].some(key => query.has(key));
-      if (localStorage.getItem(oldKey) && (oldParams || !localStorage.getItem(C.DESIGN + ':he:' + C.APP + suffix))) {
+      if (localStorage.getItem(oldKey) && (oldParams || (!config && !localStorage.getItem(currentKey)))) {
         C.assert(!query.has('schedule_id'), 'לתשובה זו כבר נשמרה הקצאה בגרסה 2.2.0. כדי להמשיך יש לפתוח את הקישור המקורי. לבדיקת סדר הצגה חדש יש להשתמש במזהה תשובה חדש.');
         startLegacyApp();
         return;
       }
       if (test && oldParams) { testLauncher(true); return; }
     }
-    config=C.config(query.toString());
+    if (!config) config=C.config(query.toString());
     if(window.parent!==window) C.assert(config.parentOrigin,'כדי להפעיל את המשימה, השאלון צריך להעביר את כתובת המקור שלו.');
     storageKey=C.stateKey(config);
     const probe=storageKey+':probe';localStorage.setItem(probe,'1');localStorage.removeItem(probe);
@@ -1967,7 +2029,7 @@ const api={pick,questions};if(typeof module==='object')module.exports=api;else r
     C.validateState(state,config,schedule);
     if(saved){viewCache=clone(state.chart_views);seenCache=clone(state.seen);commit(s=>{s.reload_count++;log(s,'page_loaded',{stage:s.stage});});}
     else {localStorage.setItem(storageKey,JSON.stringify(state));}
-    if(config.test){$('testBanner').hidden=false;$('testBanner').textContent='הרצת בדיקה — '+['6733.08.02_Heb','2.3.0',config.scheduleId,config.blockOrder,config.rotation,state.score_mapping].map(value=>'\u2066'+value+'\u2069').join(' · ')+' — מזהה '+ '\u2066'+config.responseId+'\u2069';}
+    if(config.test){$('testBanner').hidden=false;$('testBanner').textContent='הרצת בדיקה — '+['6733.08.02_Heb',config.appVersion,config.scheduleId,config.blockOrder,config.rotation,state.score_mapping].map(value=>'\u2066'+value+'\u2069').join(' · ')+' — מזהה '+ '\u2066'+config.responseId+'\u2069';}
     bridge=PilotBridge(config,showTransport);
     window.addEventListener('storage', event => {
       if (event.key !== storageKey || !event.newValue) return;
